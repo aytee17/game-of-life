@@ -9,8 +9,8 @@ body {
 
 .board {
   display: grid;
-  grid-template-rows: repeat(50, 14px);
-  grid-template-columns: repeat(50, 14px);
+  grid-template-rows: repeat(60, 14px);
+  grid-template-columns: repeat(60, 14px);
   box-sizing: inherit;
   box-shadow: 0px 0px 2.5px rgba(0, 0, 0, 0.5);
 

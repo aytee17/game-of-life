@@ -3,11 +3,10 @@ import style from "./App.scss";
 import cs from "classnames";
 import CRC32 from "crc-32";
 import flatten from "lodash.flatten";
-import snapshot from "html2canvas";
 
 export const App = () => (
     <div className={style["app"]}>
-        <Board width={50} height={50} />
+        <Board width={60} height={60} />
     </div>
 );
 
@@ -15,6 +14,11 @@ const INITIAL = "START";
 const PAUSED = "PAUSED";
 const RUNNING = "RUNNING";
 const INERT = "PERMANENT STASIS";
+
+const UP = 0;
+const DOWN = 1;
+const LEFT = 2;
+const RIGHT = 3;
 
 class Board extends Component {
     constructor(props) {
@@ -28,11 +32,6 @@ class Board extends Component {
             loadOld: false
         };
     }
-
-    setSnapshot = snapshot => {
-        const node = document.querySelector("#snapshot");
-        node.replaceChild(snapshot, node.firstChild);
-    };
 
     run = () => {
         const { phase } = this.state;
@@ -50,10 +49,6 @@ class Board extends Component {
                             this.state.board,
                             ...this.state.initialStates
                         ];
-                        snapshot(document.querySelector("." + style["board"]), {
-                            //width: 120,
-                            //height: 120
-                        }).then(this.setSnapshot);
                     } else {
                         this.setState({ loadOld: false });
                     }
@@ -76,7 +71,7 @@ class Board extends Component {
                                     prevStateCode: checksum
                                 });
                             }
-                        }, 300);
+                        }, 250);
                         this.setState({ interval });
                     });
                 });
@@ -212,6 +207,39 @@ class Board extends Component {
         }
     };
 
+    shiftCells = direction => () => {
+        let newBoard;
+
+        if (direction === LEFT || direction == RIGHT) {
+            let temp = 0;
+            newBoard = this.state.board.map((row, y) => {
+                if (direction === LEFT) row = row.reverse();
+                row = row.map((value, x) => {
+                    let newValue = temp;
+                    temp = value;
+                    if (x === 0) return 0;
+                    return newValue;
+                });
+                if (direction === LEFT) row = row.reverse();
+                return row;
+            });
+        } else {
+            const row = new Array(this.props.width).fill(0);
+            newBoard = this.state.board.slice(0);
+            if (direction === DOWN) {
+                newBoard.unshift(row);
+                newBoard.pop();
+            } else {
+                newBoard.push(row);
+                newBoard.shift();
+            }
+        }
+
+        this.setState({
+            board: newBoard
+        });
+    };
+
     renderBoard() {
         return this.state.board.map((row, y) => {
             return row.map((value, x) => {
@@ -244,11 +272,16 @@ class Board extends Component {
                 <div>
                     <button onClick={this.run}>Start</button>
                     <button onClick={this.stop}>Reset</button>
+                    <button onClick={this.shiftCells(LEFT)}>Shift Left</button>
+
+                    <button onClick={this.shiftCells(DOWN)}>Shift Down</button>
+                    <button onClick={this.shiftCells(UP)}>Shift Up</button>
+                    <button onClick={this.shiftCells(RIGHT)}>
+                        Shift Right
+                    </button>
+
                     {this.state.phase}
                     <div>{this.renderInitialStateLoaders()}</div>
-                    <div id="snapshot">
-                        <i />
-                    </div>
                 </div>
             </React.Fragment>
         );
