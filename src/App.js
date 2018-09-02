@@ -1,56 +1,128 @@
 import React, { Component } from "react";
 import style from "./App.scss";
 import cs from "classnames";
+import CRC32 from "crc-32";
+import flatten from "lodash.flatten";
+import snapshot from "html2canvas";
 
 export const App = () => (
     <div className={style["app"]}>
         <Board width={50} height={50} />
-        <div>hihihi</div>
     </div>
 );
 
-const STOPPED = 0;
-const RUNNING = 1;
+const INITIAL = "START";
+const PAUSED = "PAUSED";
+const RUNNING = "RUNNING";
+const INERT = "PERMANENT STASIS";
 
 class Board extends Component {
     constructor(props) {
         super(props);
         this.state = {
             board: this.initBoard(),
-            phase: STOPPED,
-            interval: undefined
+            initialStates: [],
+            phase: INITIAL,
+            interval: undefined,
+            prevStateCode: undefined,
+            loadOld: false
         };
     }
-    componentDidMount() {
-        setTimeout(() => this.run(), 5000);
-    }
-    run = () => {
-        this.setState({ phase: RUNNING }, () => {
-            const interval = setInterval(() => {
-                const board = this.transformCells();
-                this.setState({ board });
-            }, 1000);
-            this.setState({ interval });
-        });
+
+    setSnapshot = snapshot => {
+        const node = document.querySelector("#snapshot");
+        node.replaceChild(snapshot, node.firstChild);
     };
 
-    outOfBounds = (x, y) => {
+    run = () => {
+        const { phase } = this.state;
+        switch (phase) {
+            case RUNNING:
+            case INERT:
+                return;
+            case INITIAL:
+                this.setState({ phase: RUNNING }, () => {
+                    const update = {
+                        prevStateCode: CRC32.buf(flatten(this.state.board))
+                    };
+                    if (!this.state.loadOld) {
+                        update.initialStates = [
+                            this.state.board,
+                            ...this.state.initialStates
+                        ];
+                        snapshot(document.querySelector("." + style["board"]), {
+                            //width: 120,
+                            //height: 120
+                        }).then(this.setSnapshot);
+                    } else {
+                        this.setState({ loadOld: false });
+                    }
+                    this.setState(update, () => {
+                        const interval = setInterval(() => {
+                            const {
+                                nextBoard,
+                                emptyBoard,
+                                checksum
+                            } = this.getNextBoard();
+                            const sameBoard =
+                                checksum === this.state.prevStateCode;
+                            if (emptyBoard) {
+                                this.stop();
+                            } else if (sameBoard) {
+                                this.stasis();
+                            } else {
+                                this.setState({
+                                    board: nextBoard,
+                                    prevStateCode: checksum
+                                });
+                            }
+                        }, 300);
+                        this.setState({ interval });
+                    });
+                });
+                break;
+        }
+    };
+
+    stopUpdating = () => {
+        clearInterval(this.state.interval);
+    };
+
+    stasis = () => {
+        this.stopUpdating();
+        this.setState({ phase: INERT });
+    };
+
+    pause = () => {
+        this.stopUpdating();
+        this.setState({ phase: PAUSED });
+    };
+
+    stop = () => {
+        this.stopUpdating();
+        this.resetBoard();
+    };
+
+    outOfBounds(x, y) {
         if (x < 0 || y < 0 || x >= this.props.width || y >= this.props.height)
             return true;
         return false;
-    };
+    }
 
-    countNeighbours = (x, y) => {
+    countNeighbours(x, y) {
         let count = 0;
         let { board } = this.state;
         for (let i = -1; i < 2; i++) {
             for (let j = -1; j < 2; j++) {
-                const yDirection = y + i;
-                const xDirection = x + j;
-                if (this.outOfBounds(xDirection, yDirection) || x === y) {
+                const displaceY = y + i;
+                const displaceX = x + j;
+                if (
+                    this.outOfBounds(displaceX, displaceY) ||
+                    (displaceX === x && displaceY === y)
+                ) {
                     continue;
                 } else {
-                    const neighbour = board[yDirection][xDirection];
+                    const neighbour = board[displaceY][displaceX];
                     if (neighbour) {
                         count++;
                     }
@@ -59,9 +131,9 @@ class Board extends Component {
             }
         }
         return count;
-    };
+    }
 
-    transform = (alive, x, y) => {
+    transform(alive, x, y) {
         const count = this.countNeighbours(x, y);
         if (alive) {
             if (count === 1) {
@@ -78,12 +150,25 @@ class Board extends Component {
                 return 0;
             }
         }
-    };
+    }
 
-    transformCells = () =>
-        this.state.board.map((row, y) =>
-            row.map((value, x) => this.transform(value, x, y))
-        );
+    getNextBoard() {
+        let emptyBoard = true;
+        let stream = [];
+        const nextBoard = this.state.board.map((row, y) => {
+            const nextRow = row.map((value, x) => {
+                const nextValue = this.transform(value, x, y);
+                if (emptyBoard && nextValue === 1) {
+                    emptyBoard = false;
+                }
+                return nextValue;
+            });
+            stream = stream.concat(nextRow);
+            return nextRow;
+        });
+        const checksum = emptyBoard ? undefined : CRC32.buf(stream);
+        return { emptyBoard, nextBoard, checksum };
+    }
 
     initBoard() {
         const { width, height } = this.props;
@@ -98,14 +183,17 @@ class Board extends Component {
         return board;
     }
 
-    resetBoard = () => {
-        const clearedBoard = this.state.board.map(row => row.map(() => 0));
-        this.setState({ board: clearedBoard });
-    };
+    loadBoard = i => () =>
+        this.setState({ board: this.state.initialStates[i], loadOld: true });
 
-    toggle = value => {
+    resetBoard() {
+        const clearedBoard = this.state.board.map(row => row.map(() => 0));
+        this.setState({ board: clearedBoard, phase: INITIAL });
+    }
+
+    toggle(value) {
         return value === 0 ? 1 : 0;
-    };
+    }
 
     toggleCell = (cX, cY) => event => {
         const dragging = event.type === "mouseover" && event.buttons === 1;
@@ -124,7 +212,7 @@ class Board extends Component {
         }
     };
 
-    renderBoard = () => {
+    renderBoard() {
         return this.state.board.map((row, y) => {
             return row.map((value, x) => {
                 const key = x + y * this.props.height;
@@ -140,10 +228,30 @@ class Board extends Component {
                 );
             });
         });
-    };
+    }
+
+    renderInitialStateLoaders() {
+        const length = this.state.initialStates.length;
+        return [...Array(length).keys()].map(i => (
+            <button onClick={this.loadBoard(i)} />
+        ));
+    }
 
     render() {
-        return <div className={style["board"]}>{this.renderBoard()}</div>;
+        return (
+            <React.Fragment>
+                <div className={style["board"]}>{this.renderBoard()}</div>
+                <div>
+                    <button onClick={this.run}>Start</button>
+                    <button onClick={this.stop}>Reset</button>
+                    {this.state.phase}
+                    <div>{this.renderInitialStateLoaders()}</div>
+                    <div id="snapshot">
+                        <i />
+                    </div>
+                </div>
+            </React.Fragment>
+        );
     }
 }
 
@@ -153,7 +261,7 @@ class Cell extends React.PureComponent {
             [style["fill"]]: this.props.value
         });
         const { phase, toggle, x, y } = this.props;
-        const toggleCell = phase === RUNNING ? undefined : toggle(x, y);
+        const toggleCell = phase === INITIAL ? toggle(x, y) : undefined;
         return (
             <div
                 className={classNames}
