@@ -7,37 +7,4 @@ body {
   display: flex;
 }
 
-.board {
-  display: grid;
-  grid-template-rows: repeat(60, 14px);
-  grid-template-columns: repeat(60, 14px);
-  box-sizing: inherit;
-  box-shadow: 0px 0px 2.5px rgba(0, 0, 0, 0.5);
 
-  background-color: #fafafa; 
-}
-
-.cell {
-  height: 100%;
-  width: 100%;
-  border-radius: 2px;
-  border: 1px solid gainsboro;
-  background-color: white;
-
-  &.fill {
-    background-color: #333030;
-  }
-}
-
-@mixin pane {
-	background-color: #fff;
-	box-sizing: border-box;
-}
-
-.pane {
-  @include pane;
-  margin: 12px;
-	padding: 10px;
-	border-radius: 5px;
-	box-shadow: 0px 0px 2.5px rgba(0, 0, 0, 0.5);
-}
