@@ -1,0 +1,11 @@
+.cell {
+  height: 100%;
+  width: 100%;
+  border-radius: 2px;
+  border: 1px solid gainsboro;
+  background-color: white;
+
+  &.fill {
+    background-color: #333030;
+  }
+}

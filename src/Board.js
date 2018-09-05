@@ -1,8 +1,11 @@
 import React from "react";
 import cs from "classnames";
 import CRC32 from "crc-32";
-import { RUNNING, INITIAL, READY } from "./Phases";
+import { RUNNING, READY } from "./Phases";
+import Cell from "./Cell";
 import style from "./Board.scss";
+import flatten from "lodash.flatten";
+import isEqual from "lodash.isEqual";
 
 class Board extends React.Component {
     componentDidUpdate(prevProps) {
@@ -13,6 +16,10 @@ class Board extends React.Component {
                 if (emptyBoard) {
                     this.props.stop();
                 } else if (sameBoard) {
+                    console.log({
+                        checksum,
+                        prev: this.props.prevStateChecksum
+                    });
                     this.props.stasis();
                 } else {
                     this.props.loadNextBoard(nextBoard, checksum);
@@ -100,6 +107,11 @@ class Board extends React.Component {
                 }
                 return row;
             });
+
+            console.log({
+                same: isEqual(this.props.board, nextBoard)
+            });
+
             this.props.drawNextBoardEdit(nextBoard);
         }
     };
@@ -127,25 +139,6 @@ class Board extends React.Component {
             [style["running"]]: this.props.phase === RUNNING
         });
         return <div className={classNames}>{this.renderBoard()}</div>;
-    }
-}
-
-class Cell extends React.PureComponent {
-    render() {
-        const classNames = cs(style["cell"], {
-            [style["fill"]]: this.props.value
-        });
-        const { phase, toggle, x, y } = this.props;
-        const toggleCell = [INITIAL, READY].includes(phase)
-            ? toggle(x, y)
-            : undefined;
-        return (
-            <div
-                className={classNames}
-                onClick={toggleCell}
-                onMouseOver={toggleCell}
-            />
-        );
     }
 }
 

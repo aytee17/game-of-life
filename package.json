@@ -37,6 +37,7 @@
         "crc-32": "^1.2.0",
         "html2canvas": "^1.0.0-alpha.12",
         "lodash.flatten": "^4.4.0",
+        "lodash.isequal": "^4.5.0",
         "react": "^16.4.2",
         "react-dom": "^16.4.2"
     }
