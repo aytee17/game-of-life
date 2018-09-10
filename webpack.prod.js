@@ -5,6 +5,7 @@ const HtmlWebpackExternalsPlugin = require("html-webpack-externals-plugin");
 const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
     .BundleAnalyzerPlugin;
 const CleanWebpackPlugin = require("clean-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = merge.smart(common, {
     mode: "production",
@@ -36,6 +37,9 @@ module.exports = merge.smart(common, {
                     }
                 }
             ]
+        }),
+        new MiniCssExtractPlugin({
+            filename: "[name].style.[contenthash].css"
         }),
         new webpack.HashedModuleIdsPlugin(),
         new BundleAnalyzerPlugin()

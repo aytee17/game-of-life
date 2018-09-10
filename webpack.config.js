@@ -17,13 +17,14 @@ module.exports = {
             meta: {
                 viewport: "width=device-width,initial-scale=1"
             }
-        }),
-        new MiniCssExtractPlugin({
-            filename: "[name].style.[contenthash].css"
         })
     ],
     module: {
         rules: [
+            {
+                test: /\.svg$/,
+                use: { loader: "svg-url-loader" }
+            },
             {
                 test: /\.js$/,
                 exclude: /node_modules/,
@@ -35,14 +36,18 @@ module.exports = {
                 test: /\.scss$/,
                 use: [
                     {
-                        loader: "css-hot-loader"
+                        loader: "css-hot-loader",
+                        options: {
+                            cssModule: true
+                        }
                     },
                     MiniCssExtractPlugin.loader,
                     {
                         loader: "css-loader",
                         options: {
                             modules: true,
-                            importLoaders: 2
+                            importLoaders: 2,
+                            sourceMap: true
                         }
                     },
                     {
