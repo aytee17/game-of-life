@@ -4,8 +4,15 @@
   grid-template-columns: repeat(50, 14px);
   box-sizing: inherit;
   box-shadow: 0px 0px 2.5px rgba(0, 0, 0, 0.5);
-  cursor: pointer;
   background-color: #fafafa;
+  
+  &.pen{
+   cursor: url('./Pen.svg') 0 24 , auto; 
+  }
+
+  &.eraser {
+    cursor: url('./Eraser.svg') 12 12 , crosshair;
+  }
 
   &.running {
     cursor: auto;

@@ -1,0 +1,62 @@
+//hsl(262, 55%, 55%);
+
+$button-color: hsl(200, 100%, 38%);
+
+$button-shadow: hsl(200, 100%, 28%);
+
+.button {
+    cursor: pointer;
+    border: none;
+    outline: none;
+    border-radius: 5px;
+    box-shadow: 0 4.5px 0 0 $button-shadow;
+    padding: 8px;
+    background-color: $button-color;
+    color: #fff;
+    font-size: 1rem;
+    text-align: center;
+    transition: outline 0.09s ease-in;
+
+    &:hover:enabled {
+        box-shadow: 0 3.5px 0 0 $button-shadow;
+        transform: translateY(1px);
+    }
+
+    &:active:enabled {
+        box-shadow: 0 1.5px 0 0 $button-shadow;
+        transform: translateY(3px);
+        outline: none;
+    }
+
+    &:focus:enabled {
+        transition: outline 0.12s ease-out;
+        outline-offset: 0.4rem;
+    }
+
+    &:disabled {
+        cursor: auto;
+    }
+
+    @mixin greyed-out($shadow) {
+        background-color: hsl(0, 0%, 95%);
+        box-shadow: 0 #{$shadow}px 0 0 hsl(0, 0%, 89%);
+    }
+
+    &.pressed {
+        transform: translateY(3px);
+        box-shadow: 0 1.5px 0 0 $button-shadow;
+
+        &.greyed {
+            @include greyed-out("1.5");
+        }
+    }
+
+    &.round {
+        border-radius: 10px;
+    }
+
+    &.greyed {
+        @include greyed-out("4.5");
+        color: grey;
+    }
+}

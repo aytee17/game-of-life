@@ -5,6 +5,7 @@ import Board from "./Board";
 import Controls from "./Controls";
 import { PAUSED, RUNNING, INITIAL, READY, INERT } from "./Phases";
 import { DOWN, LEFT, RIGHT } from "./Directions";
+import mode from "./PenMode";
 
 export default class GameOfLife extends React.Component {
     constructor(props) {
@@ -12,26 +13,28 @@ export default class GameOfLife extends React.Component {
         this.state = {
             board: this.initBoard(),
             phase: INITIAL,
+            penMode: mode.DRAW,
             savedBoards: [],
             interval: undefined,
+            intervalDuration: this.props.interval,
             prevStateChecksum: undefined,
             loadOld: false
         };
     }
 
-    isEmpty = board => {
-        for (let row in board) {
-            for (let value in board[row]) {
-                let cell = board[row][value];
-                if (cell === 1) return false;
-            }
-        }
-        return true;
+    changePenMode = penMode => () => {
+        this.setState({ penMode });
     };
 
-    drawNextBoardEdit = board => {
-        const phase = this.isEmpty(board) ? INITIAL : READY;
-        this.setState({ board, phase });
+    handleIntervalChange = event => {
+        let { value } = event.target;
+        if (!isNaN(value) && value.length <= 4) {
+            this.changeIntervalDuration(value);
+        }
+    };
+
+    changeIntervalDuration = value => {
+        this.setState({ intervalDuration: value });
     };
 
     initBoard() {
@@ -75,6 +78,10 @@ export default class GameOfLife extends React.Component {
         this.setState({ phase: INERT });
     };
 
+    resume = () => {
+        this.setState({ phase: RUNNING });
+    };
+
     pause = () => {
         this.stopUpdating();
         this.setState({ phase: PAUSED });
@@ -104,15 +111,16 @@ export default class GameOfLife extends React.Component {
                     if (x === 0) return 0;
                     return newValue;
                 });
-                if (direction === LEFT) {
-                    newRow.reverse();
-                    row.reverse();
+                if (direction === LEFT) newRow.reverse();
+
+                for (let x in newRow) {
+                    row[x] = newRow[x];
                 }
-                return newRow;
+                return row;
             });
         } else {
             const row = new Array(this.props.width).fill(0);
-            nextBoard = this.state.board.slice(0);
+            nextBoard = this.state.board;
             if (direction === DOWN) {
                 nextBoard.unshift(row);
                 nextBoard.pop();
@@ -124,13 +132,35 @@ export default class GameOfLife extends React.Component {
         this.drawNextBoardEdit(nextBoard);
     };
 
+    isEmpty = board => {
+        for (let row in board) {
+            for (let value in board[row]) {
+                let cell = board[row][value];
+                if (cell === 1) return false;
+            }
+        }
+        return true;
+    };
+
+    drawNextBoardEdit = board => {
+        const phase = this.isEmpty(board) ? INITIAL : READY;
+        this.setState({ board, phase });
+    };
+
     resetBoard() {
         const clearedBoard = this.state.board.map(row => row.map(() => 0));
         this.setState({ board: clearedBoard, phase: INITIAL, loadOld: false });
     }
 
     render() {
-        const { board, phase, savedBoards, prevStateChecksum } = this.state;
+        const {
+            board,
+            phase,
+            savedBoards,
+            prevStateChecksum,
+            intervalDuration,
+            penMode
+        } = this.state;
         return (
             <React.Fragment>
                 <Board
@@ -144,6 +174,9 @@ export default class GameOfLife extends React.Component {
                     loadNextBoard={this.loadNextBoard}
                     storeInterval={this.storeInterval}
                     drawNextBoardEdit={this.drawNextBoardEdit}
+                    intervalDuration={intervalDuration}
+                    stopUpdating={this.stopUpdating}
+                    penMode={penMode}
                 />
                 <Controls
                     phase={phase}
@@ -153,6 +186,11 @@ export default class GameOfLife extends React.Component {
                     run={this.run}
                     stop={this.stop}
                     updatePhase={this.updatePhase}
+                    intervalDuration={intervalDuration}
+                    changeIntervalDuration={this.changeIntervalDuration}
+                    handleIntervalChange={this.handleIntervalChange}
+                    penMode={penMode}
+                    changePenMode={this.changePenMode}
                 />
             </React.Fragment>
         );

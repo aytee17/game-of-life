@@ -4,6 +4,7 @@
   border-radius: 2px;
   border: 1px solid gainsboro;
   background-color: white;
+  user-select: none;
 
   &.fill {
     background-color: #333030;

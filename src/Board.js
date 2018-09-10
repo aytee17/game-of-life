@@ -4,30 +4,34 @@ import CRC32 from "crc-32";
 import { RUNNING, READY } from "./Phases";
 import Cell from "./Cell";
 import style from "./Board.scss";
-import flatten from "lodash.flatten";
-import isEqual from "lodash.isEqual";
+import mode from "./PenMode";
 
 class Board extends React.Component {
     componentDidUpdate(prevProps) {
         if (prevProps.phase === READY && this.props.phase === RUNNING) {
-            const interval = setInterval(() => {
-                const { nextBoard, emptyBoard, checksum } = this.getNextBoard();
-                const sameBoard = checksum === this.props.prevStateChecksum;
-                if (emptyBoard) {
-                    this.props.stop();
-                } else if (sameBoard) {
-                    console.log({
-                        checksum,
-                        prev: this.props.prevStateChecksum
-                    });
-                    this.props.stasis();
-                } else {
-                    this.props.loadNextBoard(nextBoard, checksum);
-                }
-            }, 250);
+            const interval = setInterval(this.run, this.props.intervalDuration);
+            this.props.storeInterval(interval);
+        } else if (
+            prevProps.intervalDuration !== this.props.intervalDuration &&
+            this.props.phase === RUNNING
+        ) {
+            this.props.stopUpdating();
+            const interval = setInterval(this.run, this.props.intervalDuration);
             this.props.storeInterval(interval);
         }
     }
+
+    run = () => {
+        const { nextBoard, emptyBoard, checksum } = this.getNextBoard();
+        const sameBoard = checksum === this.props.prevStateChecksum;
+        if (emptyBoard) {
+            this.props.stop();
+        } else if (sameBoard) {
+            this.props.stasis();
+        } else {
+            this.props.loadNextBoard(nextBoard, checksum);
+        }
+    };
 
     outOfBounds(x, y) {
         if (x < 0 || y < 0 || x >= this.props.width || y >= this.props.height)
@@ -100,18 +104,18 @@ class Board extends React.Component {
     toggleCell = (cX, cY) => event => {
         const dragging = event.type === "mouseover" && event.buttons === 1;
         const clicking = event.type === "click";
+
         if (clicking || dragging) {
             const nextBoard = this.props.board.map((row, y) => {
                 if (y === cY) {
-                    row[cX] = dragging ? 1 : this.toggleValue(row[cX]);
+                    row[cX] = dragging
+                        ? this.props.penMode
+                        : this.props.penMode === mode.ERASE
+                            ? 0
+                            : this.toggleValue(row[cX]);
                 }
                 return row;
             });
-
-            console.log({
-                same: isEqual(this.props.board, nextBoard)
-            });
-
             this.props.drawNextBoardEdit(nextBoard);
         }
     };
@@ -136,7 +140,9 @@ class Board extends React.Component {
 
     render() {
         const classNames = cs(style["board"], {
-            [style["running"]]: this.props.phase === RUNNING
+            [style["running"]]: this.props.phase === RUNNING,
+            [style["pen"]]: this.props.penMode === mode.DRAW,
+            [style["eraser"]]: this.props.penMode === mode.ERASE
         });
         return <div className={classNames}>{this.renderBoard()}</div>;
     }
