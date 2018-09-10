@@ -1,11 +1,12 @@
 import React, { Component } from "react";
 import style from "./App.scss";
 import GameOfLife from "./GameOfLife";
+import { hot } from "react-hot-loader";
 
 export const App = () => (
     <div className={style["app"]}>
-        <GameOfLife width={50} height={50} />
+        <GameOfLife width={50} height={50} interval={250} />
     </div>
 );
 
-export default App;
+export default hot(module)(App);

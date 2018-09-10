@@ -1,10 +1,10 @@
 {
-    "name": "conways-game-of-life",
+    "name": "game-of-life",
     "version": "1.0.0",
     "main": "index.js",
     "license": "MIT",
     "scripts": {
-        "start": "webpack-dev-server --config webpack.dev.js",
+        "start": "webpack-dev-server --hot --config webpack.dev.js",
         "build": "webpack --config webpack.prod.js --progress"
     },
     "devDependencies": {
@@ -26,19 +26,18 @@
         "postcss-preset-env": "^5.3.0",
         "react-hot-loader": "^4.3.5",
         "sass-loader": "^7.1.0",
+        "svg-url-loader": "^2.3.2",
         "webpack": "^4.17.1",
         "webpack-bundle-analyzer": "^2.13.1",
         "webpack-cli": "^3.1.0",
-        "webpack-dev-server": "^3.1.7",
+        "webpack-dev-server": "^3.1.8",
         "webpack-merge": "^4.1.4"
     },
     "dependencies": {
         "classnames": "^2.2.6",
         "crc-32": "^1.2.0",
-        "html2canvas": "^1.0.0-alpha.12",
         "lodash.flatten": "^4.4.0",
-        "lodash.isequal": "^4.5.0",
-        "react": "^16.4.2",
-        "react-dom": "^16.4.2"
+        "react": "^16.5.0",
+        "react-dom": "^16.5.0"
     }
 }
