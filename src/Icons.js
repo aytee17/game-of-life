@@ -1,27 +1,28 @@
 import React from "react";
 
-const color = "#2e2e2e";
+const black = "#2e2e2e";
+const white = "#fff";
 
-const SVG = ({ children, disabled }) => (
+const SVG = ({ children, disabled, colour }) => (
     <svg
         width="24"
         height="24"
         viewBox="0 0 24 24"
-        fill={disabled ? "grey" : color}
+        fill={disabled ? "grey" : colour || black}
     >
         {children}
     </svg>
 );
 
 export const PenIcon = ({ pressed }) => (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill={"orange"}>
+    <svg width="24" height="24" viewBox="0 0 24 24" fill={white}>
         <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />
         <path d="M0 0h24v24H0z" fill="none" />
     </svg>
 );
 
 export const EraserIcon = ({ pressed }) => (
-    <svg width="24" height="24" viewBox="-4 -4 24 24" fill={"pink"}>
+    <svg width="24" height="24" viewBox="-4 -4 24 24" fill={white}>
         <rect width="16" height="16" rx="3" ry="3" />
     </svg>
 );
