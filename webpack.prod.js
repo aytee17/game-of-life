@@ -1,7 +1,6 @@
 const merge = require("webpack-merge");
 const webpack = require("webpack");
 const common = require("./webpack.config.js");
-const HtmlWebpackExternalsPlugin = require("html-webpack-externals-plugin");
 const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
     .BundleAnalyzerPlugin;
 const CleanWebpackPlugin = require("clean-webpack-plugin");
@@ -26,18 +25,6 @@ module.exports = merge.smart(common, {
     },
     plugins: [
         new CleanWebpackPlugin(["dist"]),
-        new HtmlWebpackExternalsPlugin({
-            externals: [
-                {
-                    module: "noto-sans",
-                    entry: {
-                        path:
-                            "https://fonts.googleapis.com/css?family=Noto+Sans",
-                        type: "css"
-                    }
-                }
-            ]
-        }),
         new MiniCssExtractPlugin({
             filename: "[name].style.[contenthash].css"
         }),

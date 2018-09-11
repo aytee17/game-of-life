@@ -1,5 +1,6 @@
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const HtmlWebpackExternalsPlugin = require("html-webpack-externals-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const PostCssPresetEnv = require("postcss-preset-env");
 
@@ -17,6 +18,18 @@ module.exports = {
             meta: {
                 viewport: "width=device-width,initial-scale=1"
             }
+        }),
+        new HtmlWebpackExternalsPlugin({
+            externals: [
+                {
+                    module: "noto-sans",
+                    entry: {
+                        path:
+                            "https://fonts.googleapis.com/css?family=Noto+Sans",
+                        type: "css"
+                    }
+                }
+            ]
         })
     ],
     module: {
