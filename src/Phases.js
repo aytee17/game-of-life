@@ -3,3 +3,17 @@ export const PAUSED = "PAUSED";
 export const RUNNING = "RUNNING";
 export const INERT = "PERMANENT STASIS";
 export const INITIAL = "INITIAL";
+
+export const phaseToEmoji = {
+    READY: "✅",
+    RUNNING: "🏃🏽‍♀️",
+    "PERMANENT STASIS": "🗿",
+    INITIAL: "🏁"
+};
+
+export const phaseMessage = {
+    READY: "Press Play to run the simulation",
+    RUNNING: "You can reset at anytime",
+    INITIAL: "Draw on the board to get started",
+    "PERMANENT STASIS": "The current configuration does not change"
+};

@@ -2,7 +2,14 @@ import React from "react";
 import style from "./Controls.scss";
 import Button from "./Button";
 import { UP, DOWN, LEFT, RIGHT } from "./Directions";
-import { READY, RUNNING, INERT, INITIAL } from "./Phases";
+import {
+    READY,
+    RUNNING,
+    INERT,
+    INITIAL,
+    phaseToEmoji,
+    phaseMessage
+} from "./Phases";
 import mode from "./PenMode";
 import {
     UpIcon,
@@ -47,37 +54,46 @@ class Controls extends React.Component {
         const eraserPressed = penMode === mode.ERASE;
         return (
             <div>
-                Status: {this.props.phase}
-                <br />
-                <div className={style["toggle"]}>
-                    <Button
-                        title="[P]lay"
-                        pressed={phase === RUNNING}
-                        disabled={startDisabled}
-                        onClick={run}
-                    >
-                        <RunIcon disabled={startDisabled} />
-                    </Button>
-
-                    <Button
-                        title="[R]eset"
-                        disabled={resetDisabled}
-                        onClick={stop}
-                    >
-                        <ResetIcon disabled={resetDisabled} />
-                    </Button>
+                <div className={style["status"]}>
+                    <div className={style["name"]}>Status</div>
+                    <div>{phaseToEmoji[phase] + phase}</div>
+                    <div className={style["message"]}>
+                        {phaseMessage[phase]}
+                    </div>
                 </div>
-                <div>
-                    Period:{" "}
-                    <input
-                        type="number"
-                        value={this.props.intervalDuration}
-                        onChange={this.props.handleIntervalChange}
-                        min={100}
-                        max={9999}
-                        onBlur={this.onBlur}
-                    />
-                    ms
+                <br />
+                <div className={style["running-controls"]}>
+                    <div className={style["toggle"]}>
+                        <Button
+                            title="[P]lay"
+                            pressed={phase === RUNNING}
+                            disabled={startDisabled}
+                            onClick={run}
+                        >
+                            <RunIcon disabled={startDisabled} />
+                        </Button>
+
+                        <Button
+                            title="[R]eset"
+                            disabled={resetDisabled}
+                            onClick={stop}
+                        >
+                            <ResetIcon disabled={resetDisabled} />
+                        </Button>
+                    </div>
+                    <div>
+                        <div style={{ fontSize: "12px" }}>Cycle Every</div>
+                        <input
+                            className={style["interval"]}
+                            type="number"
+                            value={this.props.intervalDuration}
+                            onChange={this.props.handleIntervalChange}
+                            min={100}
+                            max={9999}
+                            onBlur={this.onBlur}
+                        />
+                        <span> ms</span>
+                    </div>
                 </div>
                 <div className={style["keys"]}>
                     <Button
