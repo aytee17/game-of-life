@@ -1,7 +1,7 @@
 import React from "react";
 import cs from "classnames";
 import CRC32 from "crc-32";
-import { RUNNING, READY } from "./Phases";
+import { RUNNING, READY, INERT } from "./Phases";
 import Cell from "./Cell";
 import style from "./Board.scss";
 import mode from "./PenMode";
@@ -139,10 +139,11 @@ class Board extends React.Component {
     }
 
     render() {
+        const { phase, penMode } = this.props;
         const classNames = cs(style["board"], {
-            [style["running"]]: this.props.phase === RUNNING,
-            [style["pen"]]: this.props.penMode === mode.DRAW,
-            [style["eraser"]]: this.props.penMode === mode.ERASE
+            [style["running"]]: phase === RUNNING || phase === INERT,
+            [style["pen"]]: penMode === mode.DRAW,
+            [style["eraser"]]: penMode === mode.ERASE
         });
         return <div className={classNames}>{this.renderBoard()}</div>;
     }
