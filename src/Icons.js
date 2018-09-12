@@ -8,7 +8,7 @@ const SVG = ({ children, disabled, colour }) => (
         width="24"
         height="24"
         viewBox="0 0 24 24"
-        fill={disabled ? "grey" : colour || black}
+        fill={disabled ? "grey" : colour || white}
     >
         {children}
     </svg>
