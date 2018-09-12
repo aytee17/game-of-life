@@ -6,6 +6,20 @@ import Controls from "./Controls";
 import { PAUSED, RUNNING, INITIAL, READY, INERT } from "./Phases";
 import { DOWN, LEFT, RIGHT } from "./Directions";
 import mode from "./PenMode";
+import pako from "pako";
+import base64 from "base-64";
+
+function getQueryVariable(variable) {
+    const query = window.location.search.substring(1);
+    const vars = query.split("&");
+    for (var i = 0; i < vars.length; i++) {
+        var pair = vars[i].split("=");
+        if (pair[0] == variable) {
+            return pair[1];
+        }
+    }
+    return false;
+}
 
 export default class GameOfLife extends React.Component {
     constructor(props) {
@@ -18,9 +32,47 @@ export default class GameOfLife extends React.Component {
             interval: undefined,
             intervalDuration: this.props.interval,
             prevStateChecksum: undefined,
-            loadOld: false
+            loadOld: -1
         };
     }
+
+    componentDidMount() {
+        const compressedBoard = getQueryVariable("b");
+        if (compressedBoard) {
+            this.setState({
+                board: this.decompress(compressedBoard),
+                phase: READY
+            });
+        }
+    }
+
+    getLivingCells = board => {
+        const coordinates = [];
+        board.map((row, y) => {
+            row.map((value, x) => {
+                if (value === 1) {
+                    coordinates.push([y, x]);
+                }
+            });
+        });
+        return coordinates;
+    };
+
+    createBoardFromCells = coordinates => this.initBoard(coordinates);
+
+    compress = board =>
+        base64.encode(
+            pako.deflate(JSON.stringify(this.getLivingCells(board)), {
+                to: "string"
+            })
+        );
+
+    decompress = compressedBoard =>
+        this.createBoardFromCells(
+            JSON.parse(
+                pako.inflate(base64.decode(compressedBoard), { to: "string" })
+            )
+        );
 
     changePenMode = penMode => () => {
         this.setState({ penMode });
@@ -37,13 +89,34 @@ export default class GameOfLife extends React.Component {
         this.setState({ intervalDuration: value });
     };
 
-    initBoard() {
+    initBoard(coordinates) {
+        const loadFromCoords = coordinates !== undefined;
+        let iterator;
+        let next;
+        if (loadFromCoords) {
+            iterator = coordinates.values();
+            next = iterator.next();
+        }
+
         const { width, height } = this.props;
         const board = [];
         for (let i = 0; i < width; i++) {
             const row = [];
             for (let j = 0; j < height; j++) {
-                row[j] = 0;
+                let value;
+                if (loadFromCoords) {
+                    if (
+                        !next.done &&
+                        i === next.value[0] &&
+                        j === next.value[1]
+                    ) {
+                        value = 1;
+                        next = iterator.next();
+                    }
+                } else {
+                    value = 0;
+                }
+                row[j] = value;
             }
             board[i] = row;
         }
@@ -51,15 +124,30 @@ export default class GameOfLife extends React.Component {
     }
 
     run = () => {
+        const { loadOld, savedBoards, board } = this.state;
         const update = {
             prevStateChecksum: CRC32.buf(flatten(this.state.board)),
             phase: RUNNING
         };
-        if (!this.state.loadOld) {
-            update.savedBoards = [this.state.board, ...this.state.savedBoards];
+
+        if (loadOld >= 0) {
+            if (
+                CRC32.buf(flatten(this.decompress(savedBoards[loadOld]))) !==
+                update.prevStateChecksum
+            ) {
+                update.loadOld = -1;
+                update.savedBoards = [
+                    this.compress(this.state.board),
+                    ...this.state.savedBoards
+                ];
+            }
         } else {
-            update.loadOld = false;
+            update.savedBoards = [
+                this.compress(this.state.board),
+                ...this.state.savedBoards
+            ];
         }
+
         this.setState({ ...update });
     };
 
@@ -94,8 +182,8 @@ export default class GameOfLife extends React.Component {
 
     loadBoard = i => () =>
         this.setState({
-            board: this.state.savedBoards[i],
-            loadOld: true,
+            board: this.decompress(this.state.savedBoards[i]),
+            loadOld: i,
             phase: READY
         });
 
@@ -112,11 +200,7 @@ export default class GameOfLife extends React.Component {
                     return newValue;
                 });
                 if (direction === LEFT) newRow.reverse();
-
-                for (let x in newRow) {
-                    row[x] = newRow[x];
-                }
-                return row;
+                return newRow;
             });
         } else {
             const row = new Array(this.props.width).fill(0);
@@ -149,7 +233,7 @@ export default class GameOfLife extends React.Component {
 
     resetBoard() {
         const clearedBoard = this.state.board.map(row => row.map(() => 0));
-        this.setState({ board: clearedBoard, phase: INITIAL, loadOld: false });
+        this.setState({ board: clearedBoard, phase: INITIAL, loadOld: -1 });
     }
 
     render() {

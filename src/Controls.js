@@ -30,13 +30,19 @@ class Controls extends React.Component {
     renderInitialStateLoaders() {
         const length = this.props.savedBoards.length;
         const disabled = ![READY, INITIAL].includes(this.props.phase);
-        return [...Array(length).keys()].map(i => (
-            <button
-                key={i}
-                disabled={disabled}
-                onClick={this.props.loadBoard(i)}
-            />
-        ));
+        return (
+            <div>
+                {this.props.savedBoards.map((board, index) => (
+                    <Button
+                        key={index}
+                        disabled={disabled}
+                        onClick={this.props.loadBoard(index)}
+                    >
+                        {length - index}
+                    </Button>
+                ))}
+            </div>
+        );
     }
 
     onBlur = event => {
@@ -145,7 +151,10 @@ class Controls extends React.Component {
                         </Button>
                     </div>
                 </div>
-                <div>{this.renderInitialStateLoaders()}</div>
+                <div className={style["saved-boards"]}>
+                    Previous Boards
+                    {this.renderInitialStateLoaders()}
+                </div>
             </div>
         );
     }
