@@ -36,6 +36,8 @@ export default class GameOfLife extends React.Component {
         };
     }
 
+    getCRC32 = board => CRC32.buf(flatten(board));
+
     componentDidMount() {
         const compressedBoard = getQueryVariable("b");
         if (compressedBoard) {
@@ -123,29 +125,43 @@ export default class GameOfLife extends React.Component {
         return board;
     }
 
+    saveBoard = () => {
+        const prevBoards = this.state.savedBoards;
+        return [
+            {
+                name: prevBoards.length,
+                ref: React.createRef(),
+                board: this.compress(this.state.board)
+            },
+            ...prevBoards
+        ];
+    };
+
+    setSavedBoardName = (index, name) =>
+        this.setState({
+            savedBoardNames: { ...this.savedBoardNames, [index]: name }
+        });
+
+    getSavedBoardName = index => this.savedBoardNames[index];
+
     run = () => {
-        const { loadOld, savedBoards, board } = this.state;
+        const { loadOld, savedBoards } = this.state;
         const update = {
-            prevStateChecksum: CRC32.buf(flatten(this.state.board)),
+            prevStateChecksum: this.getCRC32(this.state.board),
             phase: RUNNING
         };
 
         if (loadOld >= 0) {
             if (
-                CRC32.buf(flatten(this.decompress(savedBoards[loadOld]))) !==
+                this.getCRC32(this.decompress(savedBoards[loadOld].board)) !==
                 update.prevStateChecksum
             ) {
-                update.loadOld = -1;
-                update.savedBoards = [
-                    this.compress(this.state.board),
-                    ...this.state.savedBoards
-                ];
+                update.loadOld = 0;
+                update.savedBoards = this.saveBoard();
             }
         } else {
-            update.savedBoards = [
-                this.compress(this.state.board),
-                ...this.state.savedBoards
-            ];
+            update.loadOld = 0;
+            update.savedBoards = this.saveBoard();
         }
 
         this.setState({ ...update });
@@ -182,7 +198,7 @@ export default class GameOfLife extends React.Component {
 
     loadBoard = i => () =>
         this.setState({
-            board: this.decompress(this.state.savedBoards[i]),
+            board: this.decompress(this.state.savedBoards[i].board),
             loadOld: i,
             phase: READY
         });
@@ -243,7 +259,8 @@ export default class GameOfLife extends React.Component {
             savedBoards,
             prevStateChecksum,
             intervalDuration,
-            penMode
+            penMode,
+            loadOld
         } = this.state;
         return (
             <React.Fragment>
@@ -266,6 +283,7 @@ export default class GameOfLife extends React.Component {
                     phase={phase}
                     savedBoards={savedBoards}
                     loadBoard={this.loadBoard}
+                    loadOld={loadOld}
                     shiftCells={this.shiftCells}
                     run={this.run}
                     stop={this.stop}
@@ -275,6 +293,8 @@ export default class GameOfLife extends React.Component {
                     handleIntervalChange={this.handleIntervalChange}
                     penMode={penMode}
                     changePenMode={this.changePenMode}
+                    setSavedBoardName={this.setSavedBoardName}
+                    getSavedBoardName={this.getSavedBoardName}
                 />
             </React.Fragment>
         );

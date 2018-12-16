@@ -2,14 +2,7 @@ import React from "react";
 import style from "./Controls.scss";
 import Button from "./Button";
 import { UP, DOWN, LEFT, RIGHT } from "./Directions";
-import {
-    READY,
-    RUNNING,
-    INERT,
-    INITIAL,
-    phaseToEmoji,
-    phaseMessage
-} from "./Phases";
+import { READY, RUNNING, INERT, INITIAL } from "./Phases";
 import mode from "./PenMode";
 import {
     UpIcon,
@@ -21,25 +14,31 @@ import {
     LeftIcon,
     DownIcon
 } from "./Icons";
+import Code from "./Code";
+import SavedBoardItem from "./SavedBoardItem";
+import Status from "./Status";
 
-class Controls extends React.Component {
+class Controls extends React.PureComponent {
     constructor(props) {
         super(props);
     }
+
+    onClick = index => event => {
+        this.props.savedBoards[index].ref.current.select();
+        document.execCommand("copy");
+    };
 
     renderInitialStateLoaders() {
         const length = this.props.savedBoards.length;
         const disabled = ![READY, INITIAL].includes(this.props.phase);
         return (
             <div>
-                {this.props.savedBoards.map((board, index) => (
-                    <Button
-                        key={index}
-                        disabled={disabled}
-                        onClick={this.props.loadBoard(index)}
-                    >
-                        {length - index}
-                    </Button>
+                {this.props.savedBoards.map((el, index) => (
+                    <SavedBoardItem key={index} disabled={disabled}>
+                        <div onClick={this.props.loadBoard(index)}>
+                            {length - index}
+                        </div>
+                    </SavedBoardItem>
                 ))}
             </div>
         );
@@ -52,22 +51,39 @@ class Controls extends React.Component {
     };
 
     render() {
-        const { phase, shiftCells, run, stop, penMode } = this.props;
+        const {
+            phase,
+            shiftCells,
+            run,
+            stop,
+            penMode,
+            loadOld,
+            savedBoards
+        } = this.props;
         const arrowDisabled = phase !== READY;
         const startDisabled = phase !== READY;
         const resetDisabled = ![READY, RUNNING, INERT].includes(phase);
         const penPressed = penMode === mode.DRAW;
         const eraserPressed = penMode === mode.ERASE;
+
+        const empty = loadOld < 0;
+        let ref, board, link;
+        if (!empty) {
+            ref = savedBoards[loadOld].ref;
+            board = savedBoards[loadOld].board;
+            link = `http://${window.location.hostname}:8080?b=${board}`;
+            console.log(link);
+        }
         return (
             <div>
-                <div className={style["status"]}>
-                    <div className={style["name"]}>Status</div>
-                    <div>{phaseToEmoji[phase] + phase}</div>
-                    <div className={style["message"]}>
-                        {phaseMessage[phase]}
-                    </div>
-                </div>
-                <br />
+                <Status phase={phase} />
+                <Code
+                    ref={ref}
+                    value={board}
+                    link={link}
+                    onClick={this.onClick(loadOld)}
+                    empty={empty}
+                />
                 <div className={style["running-controls"]}>
                     <div className={style["toggle"]}>
                         <Button
