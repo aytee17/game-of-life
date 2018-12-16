@@ -28,6 +28,14 @@ module.exports = {
                             "https://fonts.googleapis.com/css?family=Noto+Sans",
                         type: "css"
                     }
+                },
+                {
+                    module: "source-code-pro",
+                    entry: {
+                        path:
+                            "https://fonts.googleapis.com/css?family=Source+Code+Pro",
+                        type: "css"
+                    }
                 }
             ]
         })
@@ -44,6 +52,10 @@ module.exports = {
                 use: {
                     loader: "babel-loader"
                 }
+            },
+            {
+                test: /\.css$/,
+                use: [{ loader: "style-loader" }, { loader: "css-loader" }]
             },
             {
                 test: /\.scss$/,
