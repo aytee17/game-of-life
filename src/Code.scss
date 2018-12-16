@@ -1,0 +1,53 @@
+.holder {
+    padding: 13px;
+    height: auto;
+    width: 205px;
+
+    &.empty {
+        opacity: 0;
+        min-height: 44px;
+        transition: opacity 0.1s ease-in;
+        cursor: default;
+    }
+
+    &.show-time {
+        opacity: 1;
+        animation: slide-in 0.15s ease-out;
+        transition: opacity 0.15s ease-out;
+    }
+}
+
+@keyframes slide-in {
+    0% {
+        transform: translateY(0.25rem);
+    }
+    100% {
+        transform: translateY(0rem);
+    }
+}
+
+.message {
+    font-size: 13px;
+    margin-bottom: 2px;
+    color: #333;
+}
+
+.controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.board-code {
+    font-family: "Source Code Pro", sans-serif;
+    min-height: 20px;
+    color: grey;
+    border-radius: 3px;
+    border: 1px solid grey;
+    outline: none;
+    cursor: pointer;
+}
+
+.button {
+    cursor: pointer;
+}
