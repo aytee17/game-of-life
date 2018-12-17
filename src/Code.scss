@@ -19,7 +19,7 @@
 
 @keyframes slide-in {
     0% {
-        transform: translateY(0.25rem);
+        transform: translateY(0.3rem);
     }
     100% {
         transform: translateY(0rem);
@@ -36,6 +36,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    width: 212px;
 }
 
 .board-code {
@@ -46,8 +47,10 @@
     border: 1px solid grey;
     outline: none;
     cursor: pointer;
+    width: 150px;
 }
 
 .button {
     cursor: pointer;
+    padding-top: 3px;
 }
