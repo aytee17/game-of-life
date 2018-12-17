@@ -1,12 +1,19 @@
 .cell {
-  height: 100%;
-  width: 100%;
-  border-radius: 2px;
-  border: 1px solid gainsboro;
-  background-color: white;
-  user-select: none;
+    height: 100%;
+    width: 100%;
+    border-radius: 2px;
+    border: 1px solid gainsboro;
+    background-color: white;
+    user-select: none;
+    transition: 0.04s ease-in;
 
-  &.fill {
-    background-color: #333030;
-  }
+    &.fill {
+        background-color: #333030;
+        transition: 0.07s ease-out;
+    }
+
+    &:hover:not(.fill) {
+        background-color: #ececec;
+        transition: 0.07s ease-out;
+    }
 }
