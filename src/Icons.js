@@ -15,14 +15,14 @@ const SVG = ({ children, disabled, colour }) => (
 );
 
 export const CopyIcon = () => (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="#444">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="#555">
         <path fill="none" d="M0 0h24v24H0z" />
         <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm-1 4l6 6v10c0 1.1-.9 2-2 2H7.99C6.89 23 6 22.1 6 21l.01-14c0-1.1.89-2 1.99-2h7zm-1 7h5.5L14 6.5V12z" />
     </svg>
 );
 
 export const LinkIcon = () => (
-    <SVG colour={"#444"}>
+    <SVG colour={"#555"}>
         <path d="M0 0h24v24H0z" fill="none" />
         <path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z" />
     </SVG>
