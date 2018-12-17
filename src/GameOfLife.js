@@ -41,12 +41,22 @@ export default class GameOfLife extends React.Component {
     componentDidMount() {
         const compressedBoard = getQueryVariable("b");
         if (compressedBoard) {
-            this.setState({
-                board: this.decompress(compressedBoard),
-                phase: READY
-            });
+            const board = this.decompress(compressedBoard);
+            this.setBoard(board);
         }
     }
+
+    setBoard = board =>
+        this.setState({
+            board,
+            loadOld: -1,
+            phase: READY
+        });
+
+    loadBoardFromUser = coordinates => {
+        const board = this.createBoardFromCells(coordinates);
+        this.setBoard(board);
+    };
 
     getLivingCells = board => {
         const coordinates = [];
@@ -280,9 +290,12 @@ export default class GameOfLife extends React.Component {
                     penMode={penMode}
                 />
                 <Controls
+                    width={this.props.width}
+                    height={this.props.height}
                     phase={phase}
                     savedBoards={savedBoards}
                     loadBoard={this.loadBoard}
+                    loadBoardFromUser={this.loadBoardFromUser}
                     loadOld={loadOld}
                     shiftCells={this.shiftCells}
                     run={this.run}

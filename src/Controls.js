@@ -5,6 +5,7 @@ import Status from "./Status";
 import Code from "./Code";
 import PlayControls from "./PlayControls";
 import EditingControls from "./EditingControls";
+import CodeLoader from "./CodeLoader";
 import SavedBoards from "./SavedBoards";
 
 class Controls extends React.PureComponent {
@@ -21,7 +22,10 @@ class Controls extends React.PureComponent {
             intervalDuration,
             handleIntervalChange,
             changeIntervalDuration,
-            changePenMode
+            changePenMode,
+            width,
+            height,
+            loadBoardFromUser
         } = this.props;
 
         const arrowDisabled = phase !== READY;
@@ -29,6 +33,7 @@ class Controls extends React.PureComponent {
         const startDisabled = phase !== READY;
         const resetDisabled = ![READY, RUNNING, INERT].includes(phase);
         const savedBoardsDisabled = ![READY, INITIAL].includes(phase);
+        const loadBoardDisabled = [RUNNING, INERT].includes(phase);
         const penPressed = penMode === mode.DRAW;
         const eraserPressed = penMode === mode.ERASE;
 
@@ -37,8 +42,7 @@ class Controls extends React.PureComponent {
         if (!empty) {
             ref = savedBoards[loadOld].ref;
             board = savedBoards[loadOld].board;
-            link = `http://${window.location.hostname}:8080?b=${board}`;
-            console.log(link);
+            link = `http://${window.location.hostname}?b=${board}`;
         }
         return (
             <div>
@@ -61,6 +65,12 @@ class Controls extends React.PureComponent {
                     changePenMode={changePenMode}
                     penPressed={penPressed}
                     eraserPressed={eraserPressed}
+                />
+                <CodeLoader
+                    width={width}
+                    height={height}
+                    loadBoardFromUser={loadBoardFromUser}
+                    disabled={loadBoardDisabled}
                 />
                 <SavedBoards
                     savedBoards={savedBoards}
