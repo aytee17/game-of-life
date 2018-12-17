@@ -10,12 +10,13 @@ const PlayControls = ({
     resetDisabled,
     stop,
     intervalDuration,
-    handleIntervalChange
+    handleIntervalChange,
+    changeIntervalDuration
 }) => {
     function onBlur(event) {
         let { value } = event.target;
         value = value < 100 ? 100 : value;
-        this.props.changeIntervalDuration(value);
+        changeIntervalDuration(value);
     }
 
     return (

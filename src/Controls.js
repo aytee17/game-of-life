@@ -20,6 +20,7 @@ class Controls extends React.PureComponent {
             loadBoard,
             intervalDuration,
             handleIntervalChange,
+            changeIntervalDuration,
             changePenMode
         } = this.props;
 
@@ -52,6 +53,7 @@ class Controls extends React.PureComponent {
                     stop={stop}
                     intervalDuration={intervalDuration}
                     handleIntervalChange={handleIntervalChange}
+                    changeIntervalDuration={changeIntervalDuration}
                 />
                 <EditingControls
                     arrowDisabled={arrowDisabled}
