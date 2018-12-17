@@ -1,0 +1,18 @@
+.saved-boards-title {
+    font-size: 15px;
+    padding-left: 13px;
+}
+
+.saved-boards {
+    margin: 7px 0 0 13px;
+    padding: 4px 0 4px 0;
+    height: 253px;
+    border-top: 1px solid #333;
+    border-bottom: 1px solid #333;
+    overflow: scroll;
+
+    &.disabled {
+        pointer-events: none;
+        color: #777;
+    }
+}
