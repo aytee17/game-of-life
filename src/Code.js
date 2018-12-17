@@ -5,7 +5,7 @@ import { CopyIcon, LinkIcon } from "./Icons";
 import ToolTip from "react-tooltip";
 import x from "./CustomToolTipStyle.css";
 
-const Code = React.forwardRef(({ onClick, value, link, empty }, ref) => {
+const Code = React.forwardRef(({ value, link, empty }, ref) => {
     const classNames = cs(style["holder"], {
         [style["empty"]]: empty,
         [style["show-time"]]: !empty
@@ -31,7 +31,7 @@ const Code = React.forwardRef(({ onClick, value, link, empty }, ref) => {
                     ref={ref}
                     className={style["board-code"]}
                     value={value}
-                    onClick={onClick}
+                    onClick={copyCode}
                     readOnly={true}
                     spellCheck={false}
                 />
