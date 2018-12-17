@@ -1,8 +1,6 @@
 const merge = require("webpack-merge");
 const webpack = require("webpack");
 const common = require("./webpack.config.js");
-const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
-    .BundleAnalyzerPlugin;
 const CleanWebpackPlugin = require("clean-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
@@ -28,8 +26,7 @@ module.exports = merge.smart(common, {
         new MiniCssExtractPlugin({
             filename: "[name].style.[contenthash].css"
         }),
-        new webpack.HashedModuleIdsPlugin(),
-        new BundleAnalyzerPlugin()
+        new webpack.HashedModuleIdsPlugin()
     ],
     module: {
         rules: [
