@@ -1,0 +1,26 @@
+.title {
+    padding-left: 13px;
+    font-size: 15px;
+}
+
+.controls {
+    display: flex;
+    justify-content: space-between;
+    width: 220px;
+    padding: 13px;
+    padding-top: 5px;
+}
+
+.code {
+    resize: none;
+    font-family: "Source Code Pro", sans-serif;
+    color: grey;
+    border-radius: 3px;
+    border: 1px solid grey;
+    outline: none;
+    width: 150px;
+
+    &:focus {
+        border: 1px solid hsl(200, 87%, 56%);
+    }
+}
