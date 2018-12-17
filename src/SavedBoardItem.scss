@@ -1,3 +1,19 @@
 .item {
+    cursor: pointer;
+    margin: 2px 0 2px 0;
+    padding: 0 10px 0 10px;
+    border-radius: 3px;
     display: flex;
+    text-align: center;
+    transition: 0.15s ease-in;
+
+    &:hover {
+        background-color: #efefef;
+        transition: 0.2s ease-out;
+    }
+
+    &.active {
+        background-color: #96f59a96;
+        transition: 0.2s ease-out;
+    }
 }
