@@ -5,7 +5,10 @@ import { INITIAL, READY } from "./Phases";
 
 export default class Cell extends React.PureComponent {
     render() {
-        const classNames = cs(style["cell"], {
+        let styleName =
+            this.props.intervalDuration > 120 ? "cell" : "cell-no-transition";
+
+        const classNames = cs(style[styleName], {
             [style["fill"]]: this.props.value
         });
         const { phase, toggle, x, y } = this.props;

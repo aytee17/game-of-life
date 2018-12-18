@@ -1,10 +1,14 @@
-.cell {
+@mixin cell {
     height: 100%;
     width: 100%;
     border-radius: 2px;
     border: 1px solid gainsboro;
     background-color: white;
     user-select: none;
+}
+
+.cell {
+    @include cell;
     transition: 0.04s ease-in;
 
     &.fill {
@@ -15,5 +19,17 @@
     &:hover:not(.fill) {
         background-color: #e1e1e1;
         transition: 0.07s ease-out;
+    }
+}
+
+.cell-no-transition {
+    @include cell;
+
+    &.fill {
+        background-color: #333030;
+    }
+
+    &:hover:not(.fill) {
+        background-color: #e1e1e1;
     }
 }

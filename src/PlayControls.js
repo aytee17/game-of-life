@@ -13,9 +13,10 @@ const PlayControls = ({
     handleIntervalChange,
     changeIntervalDuration
 }) => {
+    const lowerLimit = 16;
     function onBlur(event) {
         let { value } = event.target;
-        value = value < 100 ? 100 : value;
+        value = value < lowerLimit ? lowerLimit : value;
         changeIntervalDuration(value);
     }
 
@@ -50,7 +51,7 @@ const PlayControls = ({
                         type="number"
                         value={intervalDuration}
                         onChange={handleIntervalChange}
-                        min={100}
+                        min={lowerLimit}
                         max={9999}
                         step={10}
                         onBlur={onBlur}

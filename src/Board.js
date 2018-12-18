@@ -111,8 +111,8 @@ class Board extends React.Component {
                     row[cX] = dragging
                         ? this.props.penMode
                         : this.props.penMode === mode.ERASE
-                            ? 0
-                            : this.toggleValue(row[cX]);
+                        ? 0
+                        : this.toggleValue(row[cX]);
                 }
                 return row;
             });
@@ -127,6 +127,7 @@ class Board extends React.Component {
                 return (
                     <Cell
                         key={key}
+                        intervalDuration={this.props.intervalDuration}
                         value={value}
                         toggle={this.toggleCell}
                         phase={this.props.phase}
