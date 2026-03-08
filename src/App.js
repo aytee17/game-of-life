@@ -26,7 +26,7 @@ export const App = () => (
                 </p>
             </header>
             <div className={style["app"]}>
-                <GameOfLife width={50} height={50} interval={150} />
+                <GameOfLife width={50} height={50} interval={100} />
             </div>
         </div>
     </div>
