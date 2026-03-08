@@ -143,6 +143,7 @@ class Board extends React.Component {
         const { phase, penMode } = this.props;
         const classNames = cs(style["board"], {
             [style["running"]]: phase === RUNNING || phase === INERT,
+            [style["inert"]]: phase === INERT,
             [style["pen"]]: penMode === mode.DRAW,
             [style["eraser"]]: penMode === mode.ERASE
         });

@@ -4,6 +4,11 @@ $button-color: hsl(200, 87%, 56%);
 
 $button-shadow: hsl(200, 87%, 46%);
 
+@keyframes pulse {
+    0%, 100% { box-shadow: 0 4.5px 0 0 $button-shadow; }
+    50% { box-shadow: 0 4.5px 0 0 $button-shadow, 0 0 0 5px hsla(200, 87%, 56%, 0.35); }
+}
+
 .button {
     cursor: pointer;
     border: none;
@@ -59,5 +64,9 @@ $button-shadow: hsl(200, 87%, 46%);
         @include greyed-out("4.5");
         color: grey;
         transition: 0.15s ease-out;
+    }
+
+    &.highlight {
+        animation: pulse 1.4s ease-in-out infinite;
     }
 }

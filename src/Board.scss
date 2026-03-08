@@ -1,7 +1,13 @@
 .board {
+    --cell-size: 14px;
+
+    @media (max-width: 820px) { --cell-size: 12px; }
+    @media (max-width: 640px) { --cell-size: 9px; }
+    @media (max-width: 480px) { --cell-size: 7px; }
+
     display: grid;
-    grid-template-rows: repeat(50, 14px);
-    grid-template-columns: repeat(50, 14px);
+    grid-template-rows: repeat(50, var(--cell-size));
+    grid-template-columns: repeat(50, var(--cell-size));
     box-sizing: inherit;
 
     &.pen {
@@ -14,5 +20,9 @@
 
     &.running {
         cursor: auto;
+    }
+
+    &.inert {
+        opacity: 0.45;
     }
 }

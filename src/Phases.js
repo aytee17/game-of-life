@@ -15,5 +15,5 @@ export const phaseMessage = {
     READY: "Press Play to run the simulation",
     RUNNING: "You can reset the board at anytime",
     INITIAL: "Draw on the board to get started",
-    "PERMANENT STASIS": "The current configuration does not change"
+    "PERMANENT STASIS": "Press Reset to start drawing again"
 };

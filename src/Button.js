@@ -10,12 +10,14 @@ class Button extends React.PureComponent {
             greyed,
             disabled,
             round,
+            highlight,
             ...props
         } = this.props;
         const className = cs(style["button"], {
             [style["pressed"]]: pressed,
             [style["greyed"]]: disabled,
-            [style["round"]]: round
+            [style["round"]]: round,
+            [style["highlight"]]: highlight
         });
 
         return (

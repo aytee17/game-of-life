@@ -28,6 +28,8 @@ class Controls extends React.PureComponent {
             loadBoardFromUser
         } = this.props;
 
+        const inert = phase === INERT;
+        const dimStyle = { opacity: 0.4, pointerEvents: "none" };
         const arrowDisabled = phase !== READY;
         const startPressed = phase === RUNNING;
         const startDisabled = phase !== READY;
@@ -58,26 +60,29 @@ class Controls extends React.PureComponent {
                     intervalDuration={intervalDuration}
                     handleIntervalChange={handleIntervalChange}
                     changeIntervalDuration={changeIntervalDuration}
+                    inert={inert}
                 />
-                <EditingControls
-                    arrowDisabled={arrowDisabled}
-                    shiftCells={shiftCells}
-                    changePenMode={changePenMode}
-                    penPressed={penPressed}
-                    eraserPressed={eraserPressed}
-                />
-                <CodeLoader
-                    width={width}
-                    height={height}
-                    loadBoardFromUser={loadBoardFromUser}
-                    disabled={loadBoardDisabled}
-                />
-                <SavedBoards
-                    savedBoards={savedBoards}
-                    loadBoard={loadBoard}
-                    disabled={savedBoardsDisabled}
-                    activeIndex={loadOld}
-                />
+                <div style={inert ? dimStyle : {}}>
+                    <EditingControls
+                        arrowDisabled={arrowDisabled}
+                        shiftCells={shiftCells}
+                        changePenMode={changePenMode}
+                        penPressed={penPressed}
+                        eraserPressed={eraserPressed}
+                    />
+                    <CodeLoader
+                        width={width}
+                        height={height}
+                        loadBoardFromUser={loadBoardFromUser}
+                        disabled={loadBoardDisabled}
+                    />
+                    <SavedBoards
+                        savedBoards={savedBoards}
+                        loadBoard={loadBoard}
+                        disabled={savedBoardsDisabled}
+                        activeIndex={loadOld}
+                    />
+                </div>
             </div>
         );
     }

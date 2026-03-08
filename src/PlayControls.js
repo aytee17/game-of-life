@@ -11,7 +11,8 @@ const PlayControls = ({
     stop,
     intervalDuration,
     handleIntervalChange,
-    changeIntervalDuration
+    changeIntervalDuration,
+    inert
 }) => {
     const lowerLimit = 16;
     function onBlur(event) {
@@ -40,6 +41,7 @@ const PlayControls = ({
                         title="[R]eset"
                         disabled={resetDisabled}
                         onClick={stop}
+                        highlight={inert}
                     >
                         <ResetIcon disabled={resetDisabled} />
                     </Button>
