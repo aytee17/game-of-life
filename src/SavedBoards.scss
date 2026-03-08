@@ -1,6 +1,14 @@
 .saved-boards-title {
-    font-size: 15px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
     padding-left: 13px;
+    margin-top: 20px;
+    font-size: 11px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #999;
 }
 
 .saved-boards {
@@ -15,6 +23,16 @@
         pointer-events: none;
         color: #777;
     }
+}
+
+.info {
+    display: flex;
+    align-items: center;
+    cursor: default;
+    text-transform: none;
+    letter-spacing: normal;
+    font-weight: normal;
+    font-size: 12px;
 }
 
 ul {

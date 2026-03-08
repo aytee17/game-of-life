@@ -22,7 +22,7 @@ const EditingControls = ({
 }) => {
     return (
         <div>
-            <div style={{ paddingLeft: "13px", fontSize: "15px" }}>Editing</div>
+            <div className={style["section-label"]}>Editing</div>
             <div className={style["keys"]}>
                 <Button
                     title="[←] Shift cells left"

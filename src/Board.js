@@ -147,7 +147,18 @@ class Board extends React.Component {
             [style["pen"]]: penMode === mode.DRAW,
             [style["eraser"]]: penMode === mode.ERASE
         });
-        return <div className={classNames}>{this.renderBoard()}</div>;
+        return (
+            <div>
+                <div className={classNames}>{this.renderBoard()}</div>
+                <div className={style["rules-title"]}>The Rules</div>
+                <ol className={style["rules"]}>
+                    <li>A live cell with fewer than 2 live neighbours dies (underpopulation)</li>
+                    <li>A live cell with 2 or 3 live neighbours survives</li>
+                    <li>A live cell with more than 3 live neighbours dies (overpopulation)</li>
+                    <li>A dead cell with exactly 3 live neighbours becomes alive (reproduction)</li>
+                </ol>
+            </div>
+        );
     }
 }
 

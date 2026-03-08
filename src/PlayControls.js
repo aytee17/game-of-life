@@ -23,9 +23,7 @@ const PlayControls = ({
 
     return (
         <div>
-            <div style={{ paddingLeft: "13px", fontSize: "15px" }}>
-                Controls
-            </div>
+            <div className={style["section-label"]}>Controls</div>
             <div className={style["running-controls"]}>
                 <div className={style["toggle"]}>
                     <Button
