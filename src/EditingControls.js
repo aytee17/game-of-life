@@ -14,6 +14,7 @@ import {
 
 const EditingControls = ({
     arrowDisabled,
+    penEraserDisabled,
     shiftCells,
     changePenMode,
     penPressed,
@@ -58,6 +59,7 @@ const EditingControls = ({
                         title="[D]raw"
                         round
                         pressed={penPressed}
+                        disabled={penEraserDisabled}
                         onClick={changePenMode(mode.DRAW)}
                     >
                         <PenIcon pressed={penPressed} />
@@ -66,6 +68,7 @@ const EditingControls = ({
                         title="[E]raser"
                         round
                         pressed={eraserPressed}
+                        disabled={penEraserDisabled}
                         onClick={changePenMode(mode.ERASE)}
                     >
                         <EraserIcon pressed={eraserPressed} />

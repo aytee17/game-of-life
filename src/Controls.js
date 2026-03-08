@@ -31,6 +31,7 @@ class Controls extends React.PureComponent {
         const inert = phase === INERT;
         const dimStyle = { opacity: 0.4, pointerEvents: "none" };
         const arrowDisabled = phase !== READY;
+        const penEraserDisabled = phase === RUNNING;
         const startPressed = phase === RUNNING;
         const startDisabled = phase !== READY;
         const resetDisabled = ![READY, RUNNING, INERT].includes(phase);
@@ -65,6 +66,7 @@ class Controls extends React.PureComponent {
                 <div style={inert ? dimStyle : {}}>
                     <EditingControls
                         arrowDisabled={arrowDisabled}
+                        penEraserDisabled={penEraserDisabled}
                         shiftCells={shiftCells}
                         changePenMode={changePenMode}
                         penPressed={penPressed}
