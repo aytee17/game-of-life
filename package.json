@@ -3,6 +3,9 @@
     "version": "1.0.0",
     "main": "index.js",
     "license": "MIT",
+    "engines": {
+        "node": ">=14"
+    },
     "scripts": {
         "start": "NODE_OPTIONS=--openssl-legacy-provider webpack-dev-server --hot --config webpack.dev.js",
         "build": "NODE_OPTIONS=--openssl-legacy-provider webpack --config webpack.prod.js --progress"
